@@ -34,6 +34,7 @@ public class DataConfig {
             Author author2 = new Author("Николай Гоголь");
             Author author3 = new Author("Лев Толстой");
             Author author4 = new Author("Антон Чехов");
+            Author author4 = new Author("Александр Пушкин");
 
             authorRepository.saveAll(List.of(author1, author2, author3, author4));
 
