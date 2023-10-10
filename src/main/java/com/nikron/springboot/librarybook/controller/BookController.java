@@ -1,5 +1,7 @@
-package com.nikron.springboot.librarybook.book;
+package com.nikron.springboot.librarybook.controller;
 
+import com.nikron.springboot.librarybook.service.BookService;
+import com.nikron.springboot.librarybook.entity.Book;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

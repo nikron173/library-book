@@ -1,5 +1,7 @@
-package com.nikron.springboot.librarybook.genre;
+package com.nikron.springboot.librarybook.service;
 
+import com.nikron.springboot.librarybook.entity.Genre;
+import com.nikron.springboot.librarybook.repository.GenreRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

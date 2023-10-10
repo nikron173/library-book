@@ -1,6 +1,5 @@
-package com.nikron.springboot.librarybook.author;
+package com.nikron.springboot.librarybook.entity;
 
-import com.nikron.springboot.librarybook.book.Book;
 import jakarta.persistence.*;
 
 import java.util.HashSet;

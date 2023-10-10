@@ -1,5 +1,7 @@
-package com.nikron.springboot.librarybook.student;
+package com.nikron.springboot.librarybook.service;
 
+import com.nikron.springboot.librarybook.entity.Student;
+import com.nikron.springboot.librarybook.repository.StudentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

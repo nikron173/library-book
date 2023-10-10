@@ -1,5 +1,7 @@
-package com.nikron.springboot.librarybook.author;
+package com.nikron.springboot.librarybook.service;
 
+import com.nikron.springboot.librarybook.entity.Author;
+import com.nikron.springboot.librarybook.repository.AuthorRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

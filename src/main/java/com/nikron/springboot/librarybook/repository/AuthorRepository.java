@@ -1,5 +1,6 @@
-package com.nikron.springboot.librarybook.author;
+package com.nikron.springboot.librarybook.repository;
 
+import com.nikron.springboot.librarybook.entity.Author;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

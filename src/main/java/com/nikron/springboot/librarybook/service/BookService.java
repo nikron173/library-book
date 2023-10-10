@@ -1,16 +1,17 @@
-package com.nikron.springboot.librarybook.book;
+package com.nikron.springboot.librarybook.service;
 
-import com.nikron.springboot.librarybook.author.Author;
-import com.nikron.springboot.librarybook.author.AuthorRepository;
-import com.nikron.springboot.librarybook.genre.Genre;
-import com.nikron.springboot.librarybook.genre.GenreRepository;
-import com.nikron.springboot.librarybook.student.Student;
-import com.nikron.springboot.librarybook.student.StudentRepository;
+import com.nikron.springboot.librarybook.entity.Author;
+import com.nikron.springboot.librarybook.repository.AuthorRepository;
+import com.nikron.springboot.librarybook.entity.Book;
+import com.nikron.springboot.librarybook.entity.Genre;
+import com.nikron.springboot.librarybook.repository.BookRepository;
+import com.nikron.springboot.librarybook.repository.GenreRepository;
+import com.nikron.springboot.librarybook.entity.Student;
+import com.nikron.springboot.librarybook.repository.StudentRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 

@@ -1,8 +1,5 @@
-package com.nikron.springboot.librarybook.book;
+package com.nikron.springboot.librarybook.entity;
 
-import com.nikron.springboot.librarybook.author.Author;
-import com.nikron.springboot.librarybook.genre.Genre;
-import com.nikron.springboot.librarybook.student.Student;
 import jakarta.persistence.*;
 
 

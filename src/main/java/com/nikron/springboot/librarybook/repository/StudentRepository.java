@@ -1,5 +1,6 @@
-package com.nikron.springboot.librarybook.student;
+package com.nikron.springboot.librarybook.repository;
 
+import com.nikron.springboot.librarybook.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

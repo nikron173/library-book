@@ -1,5 +1,7 @@
-package com.nikron.springboot.librarybook.genre;
+package com.nikron.springboot.librarybook.controller;
 
+import com.nikron.springboot.librarybook.entity.Genre;
+import com.nikron.springboot.librarybook.service.GenreService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

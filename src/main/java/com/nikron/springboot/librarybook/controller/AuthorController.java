@@ -1,5 +1,7 @@
-package com.nikron.springboot.librarybook.author;
+package com.nikron.springboot.librarybook.controller;
 
+import com.nikron.springboot.librarybook.service.AuthorService;
+import com.nikron.springboot.librarybook.entity.Author;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

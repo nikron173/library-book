@@ -1,13 +1,13 @@
-package com.nikron.springboot.librarybook.util;
+package com.nikron.springboot.librarybook.config;
 
-import com.nikron.springboot.librarybook.author.Author;
-import com.nikron.springboot.librarybook.author.AuthorRepository;
-import com.nikron.springboot.librarybook.book.Book;
-import com.nikron.springboot.librarybook.book.BookRepository;
-import com.nikron.springboot.librarybook.genre.Genre;
-import com.nikron.springboot.librarybook.genre.GenreRepository;
-import com.nikron.springboot.librarybook.student.Student;
-import com.nikron.springboot.librarybook.student.StudentRepository;
+import com.nikron.springboot.librarybook.entity.Author;
+import com.nikron.springboot.librarybook.repository.AuthorRepository;
+import com.nikron.springboot.librarybook.entity.Book;
+import com.nikron.springboot.librarybook.repository.BookRepository;
+import com.nikron.springboot.librarybook.entity.Genre;
+import com.nikron.springboot.librarybook.repository.GenreRepository;
+import com.nikron.springboot.librarybook.entity.Student;
+import com.nikron.springboot.librarybook.repository.StudentRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +34,7 @@ public class DataConfig {
             Author author2 = new Author("Николай Гоголь");
             Author author3 = new Author("Лев Толстой");
             Author author4 = new Author("Антон Чехов");
-            Author author4 = new Author("Александр Пушкин");
+            Author author5 = new Author("Александр Пушкин");
 
             authorRepository.saveAll(List.of(author1, author2, author3, author4));
 

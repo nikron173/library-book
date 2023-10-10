@@ -1,11 +1,11 @@
-package com.nikron.springboot.librarybook.student;
+package com.nikron.springboot.librarybook.entity;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.nikron.springboot.librarybook.book.Book;
+import com.nikron.springboot.librarybook.entity.Book;
 import jakarta.persistence.*;
 
 @Entity
