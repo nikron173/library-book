@@ -1,77 +1,51 @@
 package com.nikron.springboot.librarybook.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-import java.util.Objects;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "genre")
+@Data
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class Genre {
-
     @Id
-    @SequenceGenerator(name = "genre_id_sequence",
-            sequenceName = "genre_id_sequence",
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "genre_id_sequence")
-    @Column(name = "genre_id")
-    private Long id;
-    @Column(name = "genre_name",
-    unique = true,
-    nullable = false)
+    @GeneratedValue(
+            strategy = GenerationType.UUID
+    )
+    @Column(
+            name = "genre_id",
+            columnDefinition = "UUID DEFAULT gen_random_uuid()"
+    )
+    private UUID id;
+    @Column(
+            name = "genre_name",
+            unique = true,
+            nullable = false
+    )
+    @NonNull
+    @Size(min = 3, max = 20, message = "Genre name range from 3 to 20 character")
     private String genreName;
 
-    @OneToMany(mappedBy = "genre", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<Book> books;
-
-    public Genre() {
-    }
-
-    public Genre(Long id, String genreName) {
-        this.id = id;
-        this.genreName = genreName;
-    }
-
-    public Genre(String genreName) {
-        this.genreName = genreName;
-    }
-
-    public String getGenreName() {
-        return genreName;
-    }
-
-    public void setGenreName(String genreName) {
-        this.genreName = genreName;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Genre genre = (Genre) o;
-
-        if (!Objects.equals(id, genre.id)) return false;
-        return Objects.equals(genreName, genre.genreName);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (genreName != null ? genreName.hashCode() : 0);
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Genre{" +
-                "id=" + id +
-                ", genre='" + genreName + '\'' +
-                '}';
-    }
+    @OneToMany(
+            mappedBy = "genre",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true
+    )
+    private List<Book> books = new ArrayList<>();
 }

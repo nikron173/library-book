@@ -1,57 +1,58 @@
 package com.nikron.springboot.librarybook.service;
 
 import com.nikron.springboot.librarybook.entity.Student;
+import com.nikron.springboot.librarybook.error.BaseErrorHandler;
 import com.nikron.springboot.librarybook.repository.StudentRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class StudentService {
 
-    private final StudentRepository studentRepository;
-
-    @Autowired
-    public StudentService(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
+    @NonNull private final StudentRepository studentRepository;
 
     public List<Student> getStudents() {
         return studentRepository.findAll();
     }
 
-    public void registerNewStudent(Student student) {
+    public UUID registerNewStudent(Student student) throws BaseErrorHandler {
         Optional<Student> optionalStudent = studentRepository.getStudentByEmail(student.getEmail());
         if (optionalStudent.isPresent()){
-            throw new IllegalStateException("Student with email: " + student.getEmail()
+            throw new BaseErrorHandler("Student with email: " + student.getEmail()
                     + " already taken.");
         }
         studentRepository.save(student);
+        return studentRepository.getStudentByEmail(student.getEmail()).get().getId();
     }
 
-    public void deleteStudent(Long id) {
+    public void deleteStudent(UUID id) throws BaseErrorHandler {
         if (!studentRepository.existsById(id)) {
-            throw new IllegalStateException("Student with id " + id + " not found.");
+            throw new BaseErrorHandler("Student with id " + id + " not found.");
         }
         studentRepository.deleteById(id);
     }
 
     @Transactional
-    public void updateStudent(Long studentId, String name, String email) {
-        Student student = studentRepository.getStudentById(studentId)
-                .orElseThrow(() -> new IllegalStateException("Student with id " + studentId + " not found."));
-
-        if (name != null && name.length() > 2
-                && !Objects.equals(student.getName(), name)){
-            student.setName(name);
+    public void updateStudent(UUID id, Student student) throws BaseErrorHandler {
+        Student studentOriginal = studentRepository.findById(id)
+                .orElseThrow(() -> new BaseErrorHandler("Student with id " + id + " not found."));
+        if (!Objects.equals(student.getName(), studentOriginal.getName())){
+            studentOriginal.setName(student.getName());
         }
-        if (email != null && email.matches(".*@.*\\..*")
-            && !Objects.equals(student.getEmail(), email)){
-            student.setEmail(email);
+        if (!Objects.equals(student.getEmail(), studentOriginal.getEmail()) &&
+            studentRepository.getStudentByEmail(student.getEmail()).isEmpty()){
+            studentOriginal.setEmail(student.getEmail());
+        }
+        if (!Objects.equals(student.getBirthDay(), studentOriginal.getBirthDay())){
+            studentOriginal.setBirthDay(student.getBirthDay());
         }
     }
 }

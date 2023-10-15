@@ -1,71 +1,56 @@
 package com.nikron.springboot.librarybook.config;
 
-import com.nikron.springboot.librarybook.entity.Author;
-import com.nikron.springboot.librarybook.repository.AuthorRepository;
-import com.nikron.springboot.librarybook.entity.Book;
-import com.nikron.springboot.librarybook.repository.BookRepository;
-import com.nikron.springboot.librarybook.entity.Genre;
-import com.nikron.springboot.librarybook.repository.GenreRepository;
-import com.nikron.springboot.librarybook.entity.Student;
-import com.nikron.springboot.librarybook.repository.StudentRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.List;
 
 @Configuration
-public class DataConfig {
+@RequiredArgsConstructor
+public class DataConfig implements CommandLineRunner{
+    private final JdbcTemplate jdbcTemplate;
 
-    @Bean
-    CommandLineRunner commandLineRunner(BookRepository bookRepository,
-                                        StudentRepository studentRepository,
-                                        GenreRepository genreRepository,
-                                        AuthorRepository authorRepository){
-        return args -> {
-            Genre genre1 = new Genre("Роман");
-            Genre genre2 = new Genre("Приключение");
-            Genre genre3 = new Genre("Повесть");
-            genreRepository.saveAll(List.of(genre1, genre2, genre3));
+    @Override
+    public void run(String... args) throws Exception {
+        String insertGenre = "insert into genre (genre_name) values (?)";
+        String insertAuthor = "insert into author (author_name) values (?)";
+        String insertStudent = "insert into student (student_name,email,birth_day) values (?,?,?)";
 
-            Author author1 = new Author("Михаил Булгаков");
-            Author author2 = new Author("Николай Гоголь");
-            Author author3 = new Author("Лев Толстой");
-            Author author4 = new Author("Антон Чехов");
-            Author author5 = new Author("Александр Пушкин");
+        String insertBookStudent = "insert into book (author_id,genre_id,student_id,book_name,create_date) values " +
+                "((select author_id from author where author_name=?)," +
+                "(select genre_id from genre where genre_name=?), " +
+                "(select student_id from student where email=?),?,?) ";
 
-            authorRepository.saveAll(List.of(author1, author2, author3, author4));
+        String insertBook = "insert into book (author_id,genre_id,book_name,create_date) values " +
+                "((select author_id from author where author_name=?)," +
+                "(select genre_id from genre where genre_name=?),?,?) ";
 
-            Book book1 = new Book("Мастер и Маргарита",
-                    author1,
-                    genre1,
-                    1929);
-            Book book2 = new Book("Собачье сердце",
-                    author1,
-                    genre2,
-                    1925);
-            Book book3 = new Book("Мёртвые души",
-                    author2,
-                    genre3,
-                    1842);
-            Book book4 = new Book("Война и мир",
-                    author3,
-                    genre1,
-                    1865);
-            Book book5 = new Book("Палата номер 6",
-                    author4,
-                    genre1,
-                    1892);
+        jdbcTemplate.update(insertGenre, "Роман");
+        jdbcTemplate.update(insertGenre, "Приключение");
+        jdbcTemplate.update(insertGenre, "Повесть");
 
-            bookRepository.saveAll(List.of(book1, book2, book3, book4, book5));
+        jdbcTemplate.update(insertAuthor, "Михаил Булгаков");
+        jdbcTemplate.update(insertAuthor, "Николай Гоголь");
+        jdbcTemplate.update(insertAuthor, "Лев Толстой");
+        jdbcTemplate.update(insertAuthor, "Антон Чехов");
+        jdbcTemplate.update(insertAuthor, "Александр Пушкин");
 
-            Student student1 = new Student("Nikita", "nikron17355@yandex.ru",
-                    LocalDate.of(1997, Month.AUGUST, 30));
-            Student student2 = new Student("Vika", "vika@yandex.ru",
-                    LocalDate.of(1999, Month.MARCH, 2));
-            studentRepository.saveAll(List.of(student1, student2));
-        };
+        jdbcTemplate.update(insertStudent, "Nikita", "nikron17355@yandex.ru",
+                LocalDate.of(1997, 8, 30));
+        jdbcTemplate.update(insertStudent, "Vika", "vika@yandex.ru",
+                LocalDate.of(1999, 3, 2));
+
+        jdbcTemplate.update(insertBook, "Михаил Булгаков", "Роман", "Мастер и Маргарита",
+                LocalDate.of(1927,1,3));
+        jdbcTemplate.update(insertBook, "Михаил Булгаков", "Приключение", "Собачье сердце",
+                LocalDate.of(1963, 6, 21));
+        jdbcTemplate.update(insertBook, "Николай Гоголь", "Повесть", "Мёртвые души",
+                LocalDate.of(1922, 8, 2));
+        jdbcTemplate.update(insertBook, "Лев Толстой", "Роман", "Война и мир",
+                LocalDate.of(1781, 2, 13));
+        jdbcTemplate.update(insertBookStudent, "Антон Чехов", "Роман", "nikron17355@yandex.ru" ,"Палата номер 6",
+                LocalDate.of(1872, 3, 15));
     }
 }

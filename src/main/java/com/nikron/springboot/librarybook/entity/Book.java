@@ -1,100 +1,70 @@
 package com.nikron.springboot.librarybook.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.UUID;
 
 
 @Entity
-@Table
+@Table(name = "book")
+@Data
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class Book {
     @Id
-    @SequenceGenerator(name = "book_id_sequence",
-            sequenceName = "book_id_sequence",
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "book_id_sequence")
-    private Long id;
-    @Column(name = "book_name",
-            nullable = false)
+    @GeneratedValue(
+            strategy = GenerationType.UUID
+    )
+    @Column(
+            name = "book_id",
+            columnDefinition = "UUID DEFAULT gen_random_uuid()"
+    )
+    private UUID id;
+    @Column(
+            name = "book_name",
+            nullable = false
+    )
+    @NonNull
+    @Size(min = 3, max = 20, message = "Book name range from 7 to 20 character")
     private String bookName;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", nullable = false)
-    private Author author;
+    @JoinColumn(
+            name = "author_id",
+            nullable = false
+    )
+    @NonNull private Author author;
 
     @ManyToOne
-    @JoinColumn(name = "genre_id", nullable = false)
-    private Genre genre;
+    @JoinColumn(
+            name = "genre_id",
+            nullable = false
+    )
+    @NonNull private Genre genre;
 
-    @Column(name = "create_date",
-            columnDefinition = "INT")
-    private Integer createDate;
+    @Column(
+            name = "create_date",
+            columnDefinition = "DATE"
+    )
+    @NonNull private LocalDate createDate;
 
     @ManyToOne
-    @JoinColumn(name = "student_id")
+    @JoinColumn(
+            name = "student_id",
+            columnDefinition = "UUID"
+    )
     private Student student;
-
-    public Book(String bookName, Author author, Genre genre, Integer createDate) {
-        this.bookName = bookName;
-        this.author = author;
-        this.genre = genre;
-        this.createDate = createDate;
-    }
-
-    public Book() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getBookName() {
-        return bookName;
-    }
-
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
-    }
-
-    public Genre getGenre() {
-        return genre;
-    }
-
-    public void setGenre(Genre genre) {
-        this.genre = genre;
-    }
-
-    public Integer getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Integer createDate) {
-        this.createDate = createDate;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", bookName='" + bookName + '\'' +
-                ", author=" + author.getAuthorName() +
-                ", genre=" + genre.getGenreName() +
-                ", createDate=" + createDate +
-                '}';
-    }
 }

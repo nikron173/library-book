@@ -1,44 +1,56 @@
 package com.nikron.springboot.librarybook.controller;
 
-import com.nikron.springboot.librarybook.entity.Genre;
+import com.nikron.springboot.librarybook.dto.GenreDTO;
+import com.nikron.springboot.librarybook.error.BaseErrorHandler;
+import com.nikron.springboot.librarybook.mapper.GenreMapper;
 import com.nikron.springboot.librarybook.service.GenreService;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "api/v1/genre")
+@AllArgsConstructor
 public class GenreController {
-    private final GenreService genreService;
-
-    public GenreController(GenreService genreService) {
-        this.genreService = genreService;
-    }
+    @NonNull private final GenreService genreService;
+    @NonNull private final GenreMapper genreMapper;
 
     @GetMapping
-    public List<Genre> getAllGenres(){
-        return genreService.getAllGenres();
+    @ResponseBody
+    public List<GenreDTO> getAllGenres(){
+        return genreService.getAllGenres()
+                .stream().map(genreMapper::genreDTO).toList();
     }
 
-    @GetMapping(path = "{genreId}")
-    public Genre getGenreId(@PathVariable(name = "genreId") Long genreId){
-        return genreService.getGenreId(genreId);
+    @GetMapping(path = "{id}")
+    public GenreDTO getGenreId(@PathVariable(name = "id") UUID id){
+        return genreMapper.genreDTO(genreService.getGenreId(id));
     }
 
     @PostMapping
-    public void addGenre(@RequestBody Genre genre){
-        genreService.addGenre(genre);
+    public ResponseEntity<String> addGenre(@RequestBody GenreDTO genre) throws BaseErrorHandler {
+        genreService.addGenre(genreMapper.dtoToGenre(genre));
+        return new ResponseEntity<>("Genre created.", HttpStatusCode.valueOf(201));
     }
 
-    @DeleteMapping(path = "{genreId}")
-    public void deleteGenre(@PathVariable(name = "genreId") Long genreId){
-        genreService.deleteGenre(genreId);
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<String> deleteGenre(@PathVariable(name = "id") UUID id) throws BaseErrorHandler {
+        genreService.deleteGenre(id);
+        return new ResponseEntity<>(String.format("Genre id: %s deleted.", id),
+                HttpStatusCode.valueOf(200));
     }
 
 
-    @PutMapping(path = "{genreId}")
-    public void updateGenre(@PathVariable(name = "genreId") Long genreId,
-                             @RequestParam(name = "genreName") String genreName){
-        genreService.updateGenre(genreId, genreName);
+    @PutMapping(path = "{id}")
+    public ResponseEntity<String> updateGenre(@PathVariable(name = "id") UUID id,
+                             @RequestBody GenreDTO genre) throws BaseErrorHandler {
+        genreService.updateGenre(id, genreMapper.dtoToGenre(genre));
+        return new ResponseEntity<>(String.format("Genre id: %s updated.", id),
+                HttpStatusCode.valueOf(200));
     }
 }

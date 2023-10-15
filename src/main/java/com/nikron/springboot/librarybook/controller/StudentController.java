@@ -1,41 +1,59 @@
 package com.nikron.springboot.librarybook.controller;
 
-import com.nikron.springboot.librarybook.entity.Student;
+import com.nikron.springboot.librarybook.dto.StudentCreateDTO;
+import com.nikron.springboot.librarybook.dto.StudentInfoDTO;
+import com.nikron.springboot.librarybook.error.BaseErrorHandler;
+import com.nikron.springboot.librarybook.mapper.StudentMapper;
 import com.nikron.springboot.librarybook.service.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "api/v1/student")
+@AllArgsConstructor
 public class StudentController {
-    private final StudentService studentService;
-
-    @Autowired
-    public StudentController(StudentService studentService) {
-        this.studentService = studentService;
-    }
+    @NonNull private final StudentService studentService;
+    @NonNull private final StudentMapper studentMapper;
 
     @GetMapping
-    public List<Student> getStudents(){
-        return studentService.getStudents();
+    public List<StudentInfoDTO> getStudents(){
+        return studentService.getStudents().stream()
+                .map(studentMapper::studentInfoToDto).toList();
     }
 
     @PostMapping
-    public void registerNewStudent(@RequestBody Student student){
-        studentService.registerNewStudent(student);
+    public ResponseEntity<String> registerNewStudent(@RequestBody StudentCreateDTO student) throws BaseErrorHandler {
+        UUID id = studentService.registerNewStudent(studentMapper.dtoToStudent(student));
+        return new ResponseEntity<>(String.format("Student id: %s created.", id),
+                HttpStatusCode.valueOf(200));
     }
 
-    @DeleteMapping(path = "{studentId}")
-    public void deleteStudent(@PathVariable("studentId") Long id){
+    @DeleteMapping(path = "{id}")
+    public ResponseEntity<String> deleteStudent(@PathVariable("id") UUID id) throws BaseErrorHandler {
         studentService.deleteStudent(id);
+        return new ResponseEntity<>(String.format("Student id: %s deleted.", id),
+                HttpStatusCode.valueOf(200));
     }
 
-    @PutMapping(path = "{studentId}")
-    public void updateStudent(@PathVariable("studentId") Long studentId,
-                              @RequestParam(required = false) String name,
-                              @RequestParam(required = false) String email){
-        studentService.updateStudent(studentId, name, email);
+    @PutMapping(path = "{id}")
+    public ResponseEntity<String> updateStudent(@PathVariable("id") UUID id,
+                              @RequestBody StudentCreateDTO studentCreateDTO) throws BaseErrorHandler {
+        studentService.updateStudent(id, studentMapper.dtoToStudent(studentCreateDTO));
+        return new ResponseEntity<>(String.format("Student id: %s updated.", id),
+                HttpStatusCode.valueOf(201));
     }
 }
