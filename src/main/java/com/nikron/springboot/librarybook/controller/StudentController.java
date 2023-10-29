@@ -1,10 +1,13 @@
 package com.nikron.springboot.librarybook.controller;
 
+import com.nikron.springboot.librarybook.dto.StudentBookDTO;
 import com.nikron.springboot.librarybook.dto.StudentCreateDTO;
 import com.nikron.springboot.librarybook.dto.StudentInfoDTO;
+import com.nikron.springboot.librarybook.entity.Student;
 import com.nikron.springboot.librarybook.error.BaseErrorHandler;
 import com.nikron.springboot.librarybook.mapper.StudentMapper;
 import com.nikron.springboot.librarybook.service.StudentService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.HttpStatusCode;
@@ -35,8 +38,17 @@ public class StudentController {
                 .map(studentMapper::studentInfoToDto).toList();
     }
 
+    @GetMapping(path = "{id}/books")
+    public ResponseEntity<StudentBookDTO> getStudentBooks(
+            @PathVariable(name = "id", required = false) UUID id)
+            throws BaseErrorHandler {
+        Student student = studentService.getStudent(id);
+        StudentBookDTO studentBookDTO = studentMapper.studentBookDTO(student);
+        return new ResponseEntity<>(studentBookDTO, HttpStatusCode.valueOf(200));
+    }
+
     @PostMapping
-    public ResponseEntity<String> registerNewStudent(@RequestBody StudentCreateDTO student) throws BaseErrorHandler {
+    public ResponseEntity<String> registerNewStudent(@RequestBody @Valid StudentCreateDTO student) throws BaseErrorHandler {
         UUID id = studentService.registerNewStudent(studentMapper.dtoToStudent(student));
         return new ResponseEntity<>(String.format("Student id: %s created.", id),
                 HttpStatusCode.valueOf(200));
@@ -51,7 +63,7 @@ public class StudentController {
 
     @PutMapping(path = "{id}")
     public ResponseEntity<String> updateStudent(@PathVariable("id") UUID id,
-                              @RequestBody StudentCreateDTO studentCreateDTO) throws BaseErrorHandler {
+                              @RequestBody @Valid StudentCreateDTO studentCreateDTO) throws BaseErrorHandler {
         studentService.updateStudent(id, studentMapper.dtoToStudent(studentCreateDTO));
         return new ResponseEntity<>(String.format("Student id: %s updated.", id),
                 HttpStatusCode.valueOf(201));

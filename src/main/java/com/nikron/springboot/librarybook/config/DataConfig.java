@@ -13,7 +13,7 @@ public class DataConfig implements CommandLineRunner{
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String[] args) throws Exception {
         String insertGenre = "insert into genre (genre_name) values (?)";
         String insertAuthor = "insert into author (author_name) values (?)";
         String insertStudent = "insert into student (student_name,email,birth_day) values (?,?,?)";

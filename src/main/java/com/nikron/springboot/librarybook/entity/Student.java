@@ -5,11 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
@@ -18,14 +22,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 @Entity
-@Table(
-        name = "student"
-)
+@Table(name = "student")
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = {"books"})
 public class Student {
     @Id
     @GeneratedValue(
@@ -54,9 +58,10 @@ public class Student {
     @NonNull private LocalDate birthDay;
 
     @OneToMany(
-            mappedBy = "student"
+            mappedBy = "student",
+            fetch = FetchType.LAZY
     )
-    private List<Book> books = new ArrayList<>();
+    private List<Book> books;
 
     @PreRemove
     public void TableBookNullStudentId(){

@@ -65,7 +65,7 @@ public class AuthorController {
 
     @PutMapping(path = "{id}")
     public ResponseEntity<String> updateAuthor(@PathVariable(name = "id") UUID id,
-                             @RequestBody AuthorDTO author) throws BaseErrorHandler {
+                             @RequestBody @Valid AuthorDTO author) throws BaseErrorHandler {
         authorService.updateAuthor(id, authorMapper.dtoToAuthor(author));
         return new ResponseEntity<>(String.format("Author id: %s updated.", id),
                 HttpStatusCode.valueOf(200));

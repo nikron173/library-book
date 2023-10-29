@@ -1,7 +1,9 @@
 package com.nikron.springboot.librarybook.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,6 +15,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -23,6 +26,7 @@ import java.util.UUID;
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
+@ToString(exclude = {"author", "genre", "student"})
 public class Book {
     @Id
     @GeneratedValue(
@@ -41,18 +45,22 @@ public class Book {
     @Size(min = 3, max = 20, message = "Book name range from 7 to 20 character")
     private String bookName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "author_id",
-            nullable = false
+            nullable = false,
+            columnDefinition = "UUID"
     )
+    @JsonIgnore
     @NonNull private Author author;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "genre_id",
-            nullable = false
+            nullable = false,
+            columnDefinition = "UUID"
     )
+    @JsonIgnore
     @NonNull private Genre genre;
 
     @Column(
@@ -61,10 +69,11 @@ public class Book {
     )
     @NonNull private LocalDate createDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(
             name = "student_id",
             columnDefinition = "UUID"
     )
+    @JsonIgnore
     private Student student;
 }

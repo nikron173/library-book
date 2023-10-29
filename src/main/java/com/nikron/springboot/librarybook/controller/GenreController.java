@@ -4,6 +4,7 @@ import com.nikron.springboot.librarybook.dto.GenreDTO;
 import com.nikron.springboot.librarybook.error.BaseErrorHandler;
 import com.nikron.springboot.librarybook.mapper.GenreMapper;
 import com.nikron.springboot.librarybook.service.GenreService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.HttpStatusCode;
@@ -33,7 +34,7 @@ public class GenreController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addGenre(@RequestBody GenreDTO genre) throws BaseErrorHandler {
+    public ResponseEntity<String> addGenre(@RequestBody @Valid GenreDTO genre) throws BaseErrorHandler {
         genreService.addGenre(genreMapper.dtoToGenre(genre));
         return new ResponseEntity<>("Genre created.", HttpStatusCode.valueOf(201));
     }
@@ -48,7 +49,7 @@ public class GenreController {
 
     @PutMapping(path = "{id}")
     public ResponseEntity<String> updateGenre(@PathVariable(name = "id") UUID id,
-                             @RequestBody GenreDTO genre) throws BaseErrorHandler {
+                             @RequestBody @Valid GenreDTO genre) throws BaseErrorHandler {
         genreService.updateGenre(id, genreMapper.dtoToGenre(genre));
         return new ResponseEntity<>(String.format("Genre id: %s updated.", id),
                 HttpStatusCode.valueOf(200));

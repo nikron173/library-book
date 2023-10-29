@@ -3,6 +3,7 @@ package com.nikron.springboot.librarybook.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,7 +46,8 @@ public class Genre {
     @OneToMany(
             mappedBy = "genre",
             cascade = CascadeType.REMOVE,
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
     )
     private List<Book> books = new ArrayList<>();
 }

@@ -12,13 +12,13 @@ import java.util.UUID;
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
-public class BookCreateDTO {
-    private UUID id;
+public class BookDTO {
+    protected UUID id;
     @NonNull
     @Size(min = 3, max = 20, message = "Book name range from 7 to 20 character")
-    private String bookName;
+    protected String bookName;
     @NonNull private AuthorDTO author;
     @NonNull private GenreDTO genre;
     @NonNull
-    private LocalDate createDate;
+    protected LocalDate createDate;
 }

@@ -1,5 +1,7 @@
 package com.nikron.springboot.librarybook.service;
 
+import com.nikron.springboot.librarybook.dto.BookDTO;
+import com.nikron.springboot.librarybook.dto.FilterBookDTO;
 import com.nikron.springboot.librarybook.entity.Author;
 import com.nikron.springboot.librarybook.entity.Genre;
 import com.nikron.springboot.librarybook.error.BaseErrorHandler;
@@ -13,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -47,15 +50,13 @@ public class BookService {
         Optional<Author> author = authorRepository.getAuthorByAuthorName(book.getAuthor().getAuthorName());
         Optional<Genre> genre = genreRepository.getGenreByGenreName(book.getGenre().getGenreName());
         if (author.isEmpty()){
-            authorRepository.save(book.getAuthor());
+            book.setAuthor(authorRepository.save(book.getAuthor()));
         }
         if (genre.isEmpty()){
-            genreRepository.save(book.getGenre());
+            book.setGenre(genreRepository.save(book.getGenre()));
         }
-        book.setAuthor(author.get());
-        book.setGenre(genre.get());
-        bookRepository.save(book);
-        return bookRepository.getBookByBookName(book.getBookName()).get().getId();
+        book.setId(bookRepository.save(book).getId());
+        return book.getId();
     }
 
     public void deleteBook(UUID id) throws BaseErrorHandler {
@@ -87,5 +88,10 @@ public class BookService {
         genreRepository.getGenreByGenreName(book.getGenre().getGenreName()).isPresent()){
             bookOrig.getGenre().setGenreName(book.getGenre().getGenreName());
         }
+    }
+
+    public List<Book> getFilterBooks(FilterBookDTO filterBookDTO){
+        return bookRepository.getFiltersBooks(filterBookDTO.getBookName(), filterBookDTO.getAuthorName(),
+                filterBookDTO.getGenreName());
     }
 }

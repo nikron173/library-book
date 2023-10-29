@@ -1,9 +1,10 @@
 package com.nikron.springboot.librarybook.controller;
 
-import com.nikron.springboot.librarybook.dto.BookCreateDTO;
+import com.nikron.springboot.librarybook.dto.BookDTO;
 import com.nikron.springboot.librarybook.error.BaseErrorHandler;
 import com.nikron.springboot.librarybook.mapper.BookMapper;
 import com.nikron.springboot.librarybook.service.BookService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.HttpStatusCode;
@@ -30,13 +31,13 @@ public class BookController {
 
     @GetMapping
     @ResponseBody
-    public List<BookCreateDTO> getBooks(){
+    public List<BookDTO> getBooks(){
         return bookService.getBooks().stream()
                 .map(bookMapper::bookCreateDTO).toList();
     }
 
     @PostMapping
-    public ResponseEntity<String> addBook(@RequestBody BookCreateDTO book) throws BaseErrorHandler {
+    public ResponseEntity<String> addBook(@RequestBody @Valid BookDTO book) throws BaseErrorHandler {
         UUID id = bookService.addBook(bookMapper.dtoToBook(book));
         return new ResponseEntity<>(String.format("Student id: %s updated.", id),
                 HttpStatusCode.valueOf(200));
@@ -51,7 +52,7 @@ public class BookController {
 
     @PutMapping(path = "{id}")
     public ResponseEntity<String> updateBook(@PathVariable(name = "id") UUID id,
-                                     @RequestBody BookCreateDTO book) throws BaseErrorHandler {
+                                     @RequestBody @Valid BookDTO book) throws BaseErrorHandler {
         bookService.updateBook(id, bookMapper.dtoToBook(book));
         return new ResponseEntity<>(String.format("Book id: %s updated.", id),
                 HttpStatusCode.valueOf(201));
